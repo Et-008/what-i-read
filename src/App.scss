@@ -1,0 +1,42 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+.App {
+  width: 100vw;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  height: 55px;
+  width: 100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  height: calc(100% - 55px);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dark-theme {
+  background-color: black;
+  color: beige;
+  font-size: 16px;
+}
