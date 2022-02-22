@@ -1,7 +1,10 @@
-import React from "react";
-import { getDatabase, ref } from "firebase/database";
+import React, { useContext } from "react";
+import { getDatabase, ref, remove } from "firebase/database";
 import { useList } from "react-firebase-hooks/database";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPen } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
+import { UserContext } from "../../App";
 
 const db = getDatabase();
 
@@ -11,9 +14,34 @@ const BlogCard = styled.div`
   padding: 16px;
   border: 1px solid #ececec;
   border-radius: 10px;
+  position: relative;
+
+  .fa-trash {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    display: none;
+    cursor: pointer;
+  }
+
+  .fa-pen {
+    position: absolute;
+    right: 48px;
+    top: 16px;
+    display: none;
+    cursor: pointer;
+  }
+
+  &:hover {
+    .fa-trash,
+    .fa-pen {
+      display: block;
+    }
+  }
 `;
 
 function BlogData() {
+  const userData = useContext(UserContext);
   const blogRef = ref(db, "posts");
   const [snapshots, loading, error] = useList(blogRef);
 
@@ -23,12 +51,27 @@ function BlogData() {
       {loading && <span>Posts: Loading...</span>}
       {!loading && snapshots && (
         <div>
-          {snapshots.map((v) => (
-            <BlogCard key={v.key}>
-              <h4>{v.val().title}</h4>
-              <p>{v.val().content}</p>
-            </BlogCard>
-          ))}
+          {snapshots.map((v) => {
+            let date = new Date(v.val().createdAt).toLocaleString();
+            return (
+              <BlogCard key={v.key}>
+                <h4>{v.val().title}</h4>
+                {userData.uid === v.val().ownerId && (
+                  <>
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => remove(v.ref)}
+                    />
+                    <FontAwesomeIcon icon={faPen} onClick={() => {}} />
+                  </>
+                )}
+                <p>{v.val().content}</p>
+                <div>
+                  <p>{date}</p><p>{v.val().authorName}</p>
+                </div>
+              </BlogCard>
+            );
+          })}
         </div>
       )}
     </div>

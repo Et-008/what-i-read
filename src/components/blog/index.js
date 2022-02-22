@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
+import { UserContext } from "../../App";
 
 import { addUserBlog } from "../../containers/database";
 import { PrimaryButton } from "../buttons";
@@ -39,8 +40,8 @@ const Input = styled.input`
 `;
 
 const Blog = (props) => {
+  const userData = useContext(UserContext);
   const [blogData, setBlogData] = useState({ title: "", content: "" });
-  const blogs = [];
 
   function handleInput(e) {
     const { name, value } = e.target;
@@ -48,7 +49,13 @@ const Blog = (props) => {
   }
 
   function handleSubmit() {
-    addUserBlog(blogData);
+    setBlogData({ title: "", content: "" });
+    addUserBlog({
+      ...blogData,
+      ownerId: userData.uid,
+      createdAt: Date.now(),
+      authorName: userData.displayName,
+    });
   }
 
   return (

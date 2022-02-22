@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import "./App.scss";
 
 import { Navbar } from "./components/navigation";
 import AppRouter from "./containers/router";
+import { Loader } from "./components/loader";
 
 const UserContext = React.createContext();
 
@@ -12,6 +14,7 @@ const App = () => {
   const [currUser, setCurrUser] = useState("");
 
   const auth = getAuth();
+  const [user, loading, error] = useAuthState(auth);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurrUser(user);
@@ -27,7 +30,8 @@ const App = () => {
           <Navbar />
         </header>
         <main>
-          <AppRouter />
+          {loading && <Loader />}
+          {!loading && <AppRouter />}
         </main>
       </UserContext.Provider>
     </div>
